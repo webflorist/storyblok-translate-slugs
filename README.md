@@ -63,6 +63,7 @@ Call `npx storyblok-translate-slugs` with the following options:
                                 (e.g. --locales "de,fr")
 --force                        Creates new slug, even if slug-field already has content. Defaults to false.
 --publish                      Publish stories after updating. Defaults to false.
+                               WARNING: May publish previously unpublished stories.
 --dry-run                      Only display the changes instead of performing them. Defaults to false.
 --verbose                      Show detailed output for every processed story.
 --help                         Show this help

@@ -44,7 +44,7 @@ OPTIONS
                                  (e.g. --locales "de,fr")
   --overwrite                    Overwrites existing translations. Defaults to false.
   --publish                      Publish stories after updating. Defaults to false.
-                                 WARNING: May publish previously unpublished stories.
+                                 Will not publish stories, that have unpublished changes or are not published.
   --dry-run                      Only display the changes instead of performing them. Defaults to false.
   --verbose                      Show detailed output for every processed story.
   --help                         Show this help
@@ -258,13 +258,19 @@ for (let i = 0; i < stories.length; i++) {
 		continue
 	}
 
+	let publish = args.publish
+	if (story.unpublished_changes || !story.published) {
+		publish = false
+	}
+
 	await StoryblokMAPI.put(`spaces/${spaceId}/stories/${story.id}`, {
 		story: story,
-		...(args.publish ? { publish: 1 } : {}),
+		...(publish ? { publish: 1 } : {}),
 	})
 
-	if (verbose) {
-		console.log('Update successful.')
+	verboseLog(`Story successfully updated${publish ? ' and published' : ''}.`)
+	if (args.publish && !publish) {
+		verboseLog(`Story not published, since it is unpublished or has unpublished changes.`)
 	}
 }
 

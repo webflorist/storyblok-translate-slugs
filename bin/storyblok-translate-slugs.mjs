@@ -42,6 +42,7 @@ OPTIONS
                                  (e.g. --only-stories "about-us")
   --locales <locales>            Comma seperated languages to process. Leave empty for all languages.
                                  (e.g. --locales "de,fr")
+  --target-lang <target-lang>    Override target locale to translate to. By default the actual target locale is used.
   --overwrite                    Overwrites existing translations. Defaults to false.
   --publish                      Publish stories after updating. Defaults to false.
                                  Will not publish stories, that have unpublished changes or are not published.
@@ -60,6 +61,7 @@ MAXIMAL EXAMPLE
       --source-lang en \\
       --content-types "page,news-article" \\
       --skip-stories "home" \\
+      --target-lang de \\
       --locales "de,fr" \\
       --overwrite \\
       --publish \\
@@ -127,7 +129,8 @@ const translator = new deepl.Translator(deeplApiKey)
 let detectedSourceLang = null
 let totalBilledCharacters = 0
 const translate = async (text, targetLang) => {
-	const translationResult = await translator.translateText(text, sourceLang, targetLang)
+	const targetLangToUse = args['target-lang'] ? args['target-lang'] : targetLang
+	const translationResult = await translator.translateText(text, sourceLang, targetLangToUse)
 
 	totalBilledCharacters += translationResult.billedCharacters
 
@@ -161,7 +164,9 @@ console.log(
 	`- mode: ${args['dry-run'] ? 'dry-run' : 'live'} ${!args['dry-run'] ? (args.publish ? '(publish)' : '(no-publish)') : ''}`
 )
 console.log(`- source locale: ${sourceLang || 'auto-detect'}`)
-console.log(`- target locales: ${locales.join(', ')}`)
+console.log(
+	`- target locales: ${locales.join(', ')}${args['target-lang'] ? ' (forcing ' + args['target-lang'] + ')' : ''}`
+)
 console.log(`- content types: ${contentTypes.join(', ')}`)
 if (skipStories.length > 0) {
 	console.log(`- skipped stories: ${skipStories.join(', ')}`)
@@ -268,9 +273,11 @@ for (let i = 0; i < stories.length; i++) {
 		...(publish ? { publish: 1 } : {}),
 	})
 
-	verboseLog(`Story successfully updated${publish ? ' and published' : ''}.`)
-	if (args.publish && !publish) {
-		verboseLog(`Story not published, since it is unpublished or has unpublished changes.`)
+	if (verbose) {
+		console.log(`Story successfully updated${publish ? ' and published' : ''}.`)
+		if (args.publish && !publish) {
+			console.log(`Story not published, since it is unpublished or has unpublished changes.`)
+		}
 	}
 }
 

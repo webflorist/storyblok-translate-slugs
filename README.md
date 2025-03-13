@@ -38,30 +38,31 @@ Call `npx storyblok-translate-slugs` with the following options:
 
 ```text
 --token <token>                (required) Personal OAuth access token created
-                                in the account settings of a Stoyblok user.
-                                (NOT the Access Token of a Space!)
-                                Alternatively, you can set the STORYBLOK_OAUTH_TOKEN environment variable.
+                               in the account settings of a Stoyblok user.
+                               (NOT the Access Token of a Space!)
+                               Alternatively, you can set the STORYBLOK_OAUTH_TOKEN environment variable.
 --space <space_id>             (required) ID of the space to backup
-                                Alternatively, you can set the STORYBLOK_SPACE_ID environment variable.
+                               Alternatively, you can set the STORYBLOK_SPACE_ID environment variable.
 --deepl-api-key <key>          (required) DeepL API Key
-                                Alternatively, you can set the DEEPL_API_KEY environment variable.
+                               Alternatively, you can set the DEEPL_API_KEY environment variable.
 --region <region>              Region of the space. Possible values are:
-                                - 'eu' (default): EU
-                                - 'us': US
-                                - 'ap': Australia
-                                - 'ca': Canada
-                                - 'cn': China
-                                Alternatively, you can set the STORYBLOK_REGION environment variable.
+                               - 'eu' (default): EU
+                               - 'us': US
+                               - 'ap': Australia
+                               - 'ca': Canada
+                               - 'cn': China
+                               Alternatively, you can set the STORYBLOK_REGION environment variable.
 --source-lang <source-lang>    Source locale to translate from (=default Storyblok locale).
-                                Defaults uses DeepL auto-detection.
+                               Defaults uses DeepL auto-detection.
 --content-types <types>        Comma seperated list of content/component types to process. Defaults to 'page'.
 --skip-stories <stories>       Comma seperated list of the full-slugs of stories to skip.
-                                (e.g. --skip-stories "home,about-us")
+                               (e.g. --skip-stories "home,about-us")
 --only-stories <stories>       Comma seperated list of the full-slugs of stories you want to limit processing to.
-                                (e.g. --only-stories "about-us")
+                               (e.g. --only-stories "about-us")
 --locales <locales>            Comma seperated languages to process. Leave empty for all languages.
-                                (e.g. --locales "de,fr")
---force                        Creates new slug, even if slug-field already has content. Defaults to false.
+                               (e.g. --locales "de,fr")
+--target-lang <target-lang>    Override target locale to translate to. By default the actual target locale is used.
+--overwrite                    Overwrites existing translations. Defaults to false.
 --publish                      Publish stories after updating. Defaults to false.
                                Will not publish stories, that have unpublished changes or are not published.
 --dry-run                      Only display the changes instead of performing them. Defaults to false.
@@ -80,18 +81,18 @@ npx storyblok-translate-slugs --token 1234567890abcdef --space 12345 --deepl-api
 ### Maximal example
 
 ```shell
-npx storyblok-translate-slugs \
-    --token 1234567890abcdef \
-    --deepl-api-key 1234567890abcdef \
-    --region us \
-    --source-lang en \
-    --content-types "page,news-article" \
-    --skip-stories "home" \
-    --locales "de,fr" \
-    --force \
-    --publish \
-    --dry-run \
-    --verbose
+$ npx storyblok-translate-slugs \\
+    --token 1234567890abcdef \\
+    --deepl-api-key 1234567890abcdef \\
+    --region us \\
+    --source-lang en \\
+    --content-types "page,news-article" \\
+    --skip-stories "home" \\
+    --target-lang de \\
+    --locales "de,fr" \\
+    --overwrite \\
+    --publish \\
+    --dry-run
 ```
 
 ## License

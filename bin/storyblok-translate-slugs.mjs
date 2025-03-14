@@ -181,15 +181,17 @@ console.log(`Fetching stories...`)
 const stories = []
 const storyList = await StoryblokMAPI.getAll(`spaces/${spaceId}/stories`)
 for (const story of storyList) {
-	if (
-		!story.is_folder &&
-		contentTypes.includes(story.content_type) &&
-		!skipStories.includes(story.full_slug) &&
-		(onlyStories.length > 0 ? onlyStories.includes(story.full_slug) : true)
-	) {
-		const storyData = await StoryblokMAPI.get(`spaces/${spaceId}/stories/${story.id}`)
-		stories.push(storyData.data.story)
+	if (!contentTypes.includes(story.content_type) && !story.is_folder) {
+		continue
 	}
+	if (skipStories.includes(story.full_slug)) {
+		continue
+	}
+	if (onlyStories.length > 0 && !onlyStories.includes(story.full_slug)) {
+		continue
+	}
+	const storyData = await StoryblokMAPI.get(`spaces/${spaceId}/stories/${story.id}`)
+	stories.push(storyData.data.story)
 }
 
 console.log('')

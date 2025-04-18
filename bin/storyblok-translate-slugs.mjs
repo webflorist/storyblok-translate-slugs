@@ -40,6 +40,7 @@ OPTIONS
                                  (e.g. --skip-stories "home,about-us")
   --only-stories <stories>       Comma seperated list of the full-slugs of stories you want to limit processing to.
                                  (e.g. --only-stories "about-us")
+  --process-folders              Also process folders. Defaults to 'false'.
   --locales <locales>            Comma seperated languages to process. Leave empty for all languages.
                                  (e.g. --locales "de,fr")
   --target-lang <target-lang>    Override target locale to translate to. By default the actual target locale is used.
@@ -61,6 +62,7 @@ MAXIMAL EXAMPLE
       --source-lang en \\
       --content-types "page,news-article" \\
       --skip-stories "home" \\
+      --process-folders \\
       --target-lang de \\
       --locales "de,fr" \\
       --overwrite \\
@@ -174,6 +176,7 @@ if (skipStories.length > 0) {
 if (onlyStories.length > 0) {
 	console.log(`- only stories: ${onlyStories.join(', ')}`)
 }
+console.log(`- include folders: ${args['process-folders'] ? 'yes' : 'no'}`)
 
 // Fetch all stories
 console.log('')
@@ -181,7 +184,10 @@ console.log(`Fetching stories...`)
 const stories = []
 const storyList = await StoryblokMAPI.getAll(`spaces/${spaceId}/stories`)
 for (const story of storyList) {
-	if (!contentTypes.includes(story.content_type) && !story.is_folder) {
+	if (
+		!contentTypes.includes(story.content_type) &&
+		!(args['process-folders'] && story.is_folder)
+	) {
 		continue
 	}
 	if (skipStories.includes(story.full_slug)) {
@@ -195,7 +201,7 @@ for (const story of storyList) {
 }
 
 console.log('')
-console.log(`Processing stories...`)
+console.log(`Processing...`)
 for (let i = 0; i < stories.length; i++) {
 	const story = stories[i]
 
@@ -203,6 +209,7 @@ for (let i = 0; i < stories.length; i++) {
 		console.log('')
 		console.log(`Default full slug:`, story.full_slug)
 		console.log(`Default name:`, story.name)
+		console.log(`Type:`, story.is_folder ? 'folder' : 'story')
 	}
 
 	for (let j = 0; j < locales.length; j++) {

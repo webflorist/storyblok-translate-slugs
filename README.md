@@ -59,6 +59,7 @@ Call `npx storyblok-translate-slugs` with the following options:
                                (e.g. --skip-stories "home,about-us")
 --only-stories <stories>       Comma seperated list of the full-slugs of stories you want to limit processing to.
                                (e.g. --only-stories "about-us")
+--process-folders              Also process folders. Defaults to 'false'.
 --locales <locales>            Comma seperated languages to process. Leave empty for all languages.
                                (e.g. --locales "de,fr")
 --target-lang <target-lang>    Override target locale to translate to. By default the actual target locale is used.
@@ -88,6 +89,7 @@ $ npx storyblok-translate-slugs \\
     --source-lang en \\
     --content-types "page,news-article" \\
     --skip-stories "home" \\
+    --process-folders \\
     --target-lang de \\
     --locales "de,fr" \\
     --overwrite \\
